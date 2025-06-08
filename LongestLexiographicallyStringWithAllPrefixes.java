@@ -1,3 +1,5 @@
+import java.util.*;
+
 class Node {
     Node[] children;
     int prefixEndCount;
@@ -120,13 +122,59 @@ class Trie {
     }
 }
 
-public class TrieImplementation {
-    public static void main(String[] args) {
-        Trie trie = new Trie();
-        trie.insert("hello");
-        trie.insert("help");
+public class LongestLexiographicallyStringWithAllPrefixes {
 
-        System.out.println(trie.searchString("hello"));
-        System.out.println(trie.prefixMatch("hel"));
+    public static String completeString(int n, String[] a) {
+        Trie trie = new Trie();
+        for (int i = 0; i < n; i++) {
+            trie.insert(a[i]);
+        }
+
+        List<String> ls = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            String s = a[i];
+
+            trie.erase(s);
+
+            int idx = 0;
+            StringBuilder sb = new StringBuilder();
+            while (idx < s.length() - 1) {
+                sb.append(s.charAt(idx));
+                if (trie.searchString(sb.toString())) {
+                    idx++;
+                } else {
+                    break;
+                }
+            }
+
+            if (idx == s.length() - 1) {
+                ls.add(s);
+            }
+
+            trie.insert(s);
+        }
+
+        // System.out.println(ls);
+        if (ls.isEmpty()) {
+            return "None";
+        }
+
+        Collections.sort(ls);
+        int sz = ls.size();
+        String ans = "";
+        for (int i = sz - 1; i >= 0; i--) {
+            String s = ls.get(i);
+            if (s.length() >= ans.length()) {
+                ans = s;
+            }
+        }
+
+        return ans;
+    }
+
+    public static void main(String[] args) {
+        String[] arr = { "n", "na", "nam", "nama", "naman" };
+        System.out.println(completeString(arr.length, arr));
     }
 }
